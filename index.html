@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seat Allocation</title>
+    <title>Railway Seat Allocation</title>
     <style>
         * {
             margin: 0;
@@ -12,195 +12,170 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
             padding: 20px;
         }
 
         .container {
+            max-width: 400px;
+            margin: 50px auto;
             background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 100%;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            text-align: center;
+            font-size: 24px;
             color: #333;
-            margin-bottom: 30px;
-            font-size: 28px;
+            margin-bottom: 25px;
+            text-align: center;
         }
 
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
         }
 
         input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
 
         input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
 
         button {
-            padding: 12px 25px;
-            background: #667eea;
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
         }
 
         button:hover {
-            background: #764ba2;
+            background: #0056b3;
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .result {
-            display: none;
-            text-align: center;
-            padding: 25px;
-            background: #f0f4ff;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .result.show {
-            display: block;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .ticket-number {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .seat-allocation {
-            font-size: 32px;
-            font-weight: bold;
-            color: #667eea;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            margin-top: 10px;
-            text-transform: uppercase;
-        }
-
-        .error {
-            display: none;
-            color: #e74c3c;
-            text-align: center;
-            padding: 15px;
-            background: #fadbd8;
-            border-radius: 8px;
-            border-left: 4px solid #e74c3c;
+        .alert {
+            padding: 12px;
             margin-top: 15px;
+            border-radius: 4px;
+            display: none;
         }
 
-        .error.show {
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .seat-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            display: none;
+        }
+
+        .seat-info.show {
             display: block;
+        }
+
+        .ticket-num {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .seat-num {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚆 Seat Allocation</h1>
-        
-        <div class="input-group">
-            <input 
-                type="number" 
-                id="ticketInput" 
-                placeholder="Enter Ticket Number" 
-                min="1"
-            >
-            <button onclick="allocateSeat()">Check Seat</button>
+        <h1>Railway Seat Finder</h1>
+
+        <div class="form-group">
+            <label for="ticketNum">Ticket Number</label>
+            <input type="number" id="ticketNum" placeholder="e.g., 1001" min="1">
         </div>
 
-        <div id="errorMessage" class="error"></div>
+        <button onclick="findSeat()">Find Seat</button>
 
-        <div id="result" class="result">
-            <div class="ticket-number">Ticket Number: <strong id="ticketDisplay"></strong></div>
-            <div class="seat-allocation" id="seatDisplay"></div>
+        <div id="message" class="alert"></div>
+
+        <div id="seatInfo" class="seat-info">
+            <div class="ticket-num">Ticket #<span id="displayTicket"></span></div>
+            <div class="seat-num" id="displaySeat"></div>
         </div>
     </div>
 
     <script>
-        const seatTypes = [
-            'Lower',
-            'Middle',
-            'Upper',
-            'Lower',
-            'Middle',
-            'Upper',
-            'Side Lower',
-            'Side Upper'
-        ];
+        const SEATS = ['Lower', 'Middle', 'Upper', 'Lower', 'Middle', 'Upper', 'Side Lower', 'Side Upper'];
 
-        function allocateSeat() {
-            const ticketInput = document.getElementById('ticketInput');
-            const ticketNumber = parseInt(ticketInput.value);
-            const resultDiv = document.getElementById('result');
-            const errorDiv = document.getElementById('errorMessage');
+        function findSeat() {
+            const input = document.getElementById('ticketNum').value.trim();
+            const ticket = parseInt(input, 10);
 
-            // Clear previous messages
-            resultDiv.classList.remove('show');
-            errorDiv.classList.remove('show');
-
-            // Validation
-            if (!ticketNumber || ticketNumber < 1) {
-                errorDiv.textContent = 'Please enter a valid ticket number (must be greater than 0)';
-                errorDiv.classList.add('show');
+            if (!input || isNaN(ticket) || ticket < 1) {
+                showError('Enter a valid ticket number');
                 return;
             }
 
-            // Calculate seat allocation (0-indexed, so subtract 1 then use modulo)
-            const seatIndex = (ticketNumber - 1) % seatTypes.length;
-            const allocatedSeat = seatTypes[seatIndex];
-
-            // Display result
-            document.getElementById('ticketDisplay').textContent = ticketNumber;
-            document.getElementById('seatDisplay').textContent = allocatedSeat;
-            resultDiv.classList.add('show');
+            const seat = SEATS[(ticket - 1) % SEATS.length];
+            displaySeat(ticket, seat);
         }
 
-        // Allow Enter key to submit
-        document.getElementById('ticketInput').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                allocateSeat();
-            }
+        function displaySeat(ticket, seat) {
+            document.getElementById('displayTicket').textContent = ticket;
+            document.getElementById('displaySeat').textContent = seat;
+            document.getElementById('seatInfo').classList.add('show');
+            hideError();
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.classList.add('error');
+            el.style.display = 'block';
+            document.getElementById('seatInfo').classList.remove('show');
+        }
+
+        function hideError() {
+            const el = document.getElementById('message');
+            el.style.display = 'none';
+            el.classList.remove('error');
+        }
+
+        document.getElementById('ticketNum').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') findSeat();
         });
     </script>
 </body>
